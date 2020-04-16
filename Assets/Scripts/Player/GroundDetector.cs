@@ -14,18 +14,20 @@ public class GroundDetector : MonoBehaviour
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("AreaTrigger")) return;
 
-        if (other.name != "Underwater PostFX") { 
+        if (other.name != "Underwater PostFX")
+        {
             currentCollisions.Add(other.gameObject);
         }
-        
-        Material material = other.GetComponent<Renderer>().material;
-        _groundType = material.name;
+
+        Renderer renderer;
+        if (other.TryGetComponent<Renderer>(out renderer))
+            _groundType = renderer.material.name;
     }
 
     public void OnTriggerExit(Collider other)
     {
         currentCollisions.Remove(other.gameObject);
-        
+
         if (other.tag.Contains(GroundTypePrefix))
         {
             _groundType = null;
