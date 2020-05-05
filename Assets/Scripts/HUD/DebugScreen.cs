@@ -1,4 +1,6 @@
-﻿using Player;
+using Player;
+using Stat;
+using Status;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,7 +19,13 @@ namespace HUD
         public Text fpsCounter;
         public int avgFrameRate;
 
-        private void Start()
+        public AttributeHolder attributeHolder;
+    public Text attributeText;
+
+    public StatusEffectHolder effectHolder;
+    public Text effectText;
+
+    private int qualityIndex = 0;private void Start()
         {
             if (coordinatesObject == null)
             {
@@ -37,7 +45,18 @@ namespace HUD
 
         private void Update()
         {
-            coordsText.text = "";
+            if (Input.GetKeyDown(KeyCode.Y))
+        {
+            QualitySettings.SetQualityLevel(qualityIndex, true);
+            qualityIndex--;
+            qualityIndex = qualityIndex % 6;
+        }
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            QualitySettings.SetQualityLevel(qualityIndex, true);
+            qualityIndex++;
+            qualityIndex = qualityIndex % 6;
+        }coordsText.text = "";
             if (showCoord_x)
                 coordsText.text += " X:" + coordinatesObject.position.x.ToString("F" + digitsAfterPoint);
             if (showCoord_y)
@@ -45,10 +64,37 @@ namespace HUD
             if (showCoord_z)
                 coordsText.text += " Z:" + coordinatesObject.position.z.ToString("F" + digitsAfterPoint);
 
-            float current = 0;
-            current = (int)(1f / Time.unscaledDeltaTime);
-            avgFrameRate = (int)current;
-            fpsCounter.text = "FPS: " + avgFrameRate.ToString();
+        float current = 0;
+        current = (int)(1f / Time.unscaledDeltaTime);
+        avgFrameRate = (int)current;
+        fpsCounter.text = "FPS: " + avgFrameRate.ToString();
+
+        var attributes = attributeHolder.GetAllAttributes();
+        if (attributes.Count > 0)
+        {
+            attributeText.text = "Attributes:";
+            foreach (var attribute in attributes)
+            {
+                attributeText.text += $"\n - {attribute}";
+            }
+        }
+        else
+        {
+            attributeText.text = "";
+        }
+
+        var effects = effectHolder.GetActiveEffects();
+        if (effects.Count > 0)
+        {
+            effectText.text = "Effects:";
+            foreach (var effect in effects)
+            {
+                effectText.text += $"\n - {effect}";
+            }
+        }
+        else
+        {
+            effectText.text = "";
         }
     }
 }

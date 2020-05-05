@@ -1,33 +1,22 @@
-﻿using Player;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Inventory {
-    [AddComponentMenu("Inventory/Item/Consumable")]
-    public class InventoryItem_Consumable : InventoryItem
+[AddComponentMenu("Inventory/Item/Consumable")]
+public class InventoryItem_Consumable : InventoryItem
+{
+    //Possible refactor: Effect-upper class -> Can be attached to anything that uses an effect, potions etc.
+
+    private void Reset()
     {
-        [Header("Restore Health")] public bool effect_restoreHealth;
+        consumable = true;
+        useable = false;
+        equippable = false;
+        droppable = true;
+        type = ItemCategory.Consumable;
+    }
 
-        public float healthAmount;
-        //Possible refactor: Effect-upper class -> Can be attached to anything that uses an effect, potions etc.
-
-        private void Reset()
-        {
-            consumable = true;
-            useable = false;
-            equippable = false;
-            droppable = true;
-            type = ItemCategory.Consumable;
-        }
-
-        public override void ContextAction()
-        {
-            Logger.log("Consume " + name);
-            if (effect_restoreHealth)
-            {
-                PlayerProperties.instance.Heal(healthAmount);
-            }
-
-            inventory.Remove(this, true);
-        }
+    public override void ContextAction()
+    {
+        Logger.log("Consume " + name);
+        inventory.Remove(this, true);
     }
 }
